@@ -277,121 +277,96 @@ forward_loo_plot <- mr_leaveoneout_plot(forward_mr_loo)
 ##### Manhattan plots ####
 
 # We categorize exposures based on taxonomy:
+# We remove all microbiota-QC pairs:
 
-forward_mr_phylum <- forward_mr[grepl("phylum",forward_mr$exposure),]
-forward_mr_class <- forward_mr[grepl("class",forward_mr$exposure),]
-forward_mr_order <- forward_mr[grepl("order",forward_mr$exposure),]
-forward_mr_family <- forward_mr[grepl("family",forward_mr$exposure),]
-forward_mr_genus <- forward_mr[grepl("genus",forward_mr$exposure),]
+forward_mr_no_QC <- forward_mr[!grepl("QC_",forward_mr$outcome),]
+
+forward_mr_phylum <- forward_mr_no_QC[grepl("phylum",
+                                            forward_mr_no_QC$exposure),]
+forward_mr_class <- forward_mr_no_QC[grepl("class",
+                                           forward_mr_no_QC$exposure),]
+forward_mr_order <- forward_mr_no_QC[grepl("order",
+                                           forward_mr_no_QC$exposure),]
+forward_mr_family <- forward_mr_no_QC[grepl("family",
+                                            forward_mr_no_QC$exposure),]
+forward_mr_genus <- forward_mr_no_QC[grepl("genus",
+                                           forward_mr_no_QC$exposure),]
 
 forward_mr_plot <- list(forward_mr_phylum, forward_mr_class, forward_mr_family,
                         forward_mr_order, forward_mr_genus)
-
-
 
 idp_category <- c()
 idp_category_number <- c()
 for (j in 1:length(forward_mr_plot)) {
   for (i in 1:nrow(forward_mr_plot[[j]])) {
-  if (grepl("QC_", forward_mr_plot[[j]]$outcome[i]) &
-      grepl("_SWI_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "QC"
+  if (grepl("_area_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "Cortical area"
     idp_category_number[i] <- 1
   } 
-  if (grepl("QC_", forward_mr_plot[[j]]$outcome[i]) &
-      grepl("_FLAIR_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "QC"
-    idp_category_number[i] <- 1
-  } 
-  if (grepl("QC_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "QC"
-    idp_category_number[i] <- 1
-  } 
-  if (grepl("AmygNuclei", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "AmygNuclei"
+  if (grepl("_thickness_", forward_mr_plot[[j]]$outcome[i]) |
+      grepl("_number_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "Cortical thickness"
     idp_category_number[i] <- 2
-  } 
-  if (grepl("aparc-", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "aparc"
+  }
+  if (grepl("_intensity", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "Regional and tissue intensity"
     idp_category_number[i] <- 3
   }
-  if (grepl("aseg_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "aseg"
+  if (grepl("_FLAIR_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "White matter hyperintensity volume"
     idp_category_number[i] <- 4
   }
-  if (grepl("BA-exvivo", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "BA"
-    idp_category_number[i] <- 5
-  }
-  if (grepl("Brainstem_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "Brain Stem"
-    idp_category_number[i] <- 6
-  }
-  if (grepl("HippSubfield_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "HippSubfield"
-    idp_category_number[i] <- 7
-  }
-  if (grepl("_FA_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI FA"
-    idp_category_number[i] <- 8
-  }
-  if (grepl("_L1_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI L1"
-    idp_category_number[i] <- 9
-  }
-  if (grepl("_L2_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI L2"
-    idp_category_number[i] <- 10
-  }
-  if (grepl("_L3_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI L3"
-    idp_category_number[i] <- 11
-  }
-  if (grepl("_MD_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI MD"
-    idp_category_number[i] <- 12
-  }
-  if (grepl("_MO_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI MO"
-    idp_category_number[i] <- 13
-  }
-  if (grepl("_OD_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI OD"
-    idp_category_number[i] <- 14
-  }
-  if (grepl("_ICVF_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI ICVF"
-    idp_category_number[i] <- 15
-  }
-  if (grepl("_ISOVF_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "dMRI ISOVF"
-    idp_category_number[i] <- 16
-  }
-  if (grepl("_SWI_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "SWI"
-    idp_category_number[i] <- 17
+  if (!grepl("_FLAIR_", forward_mr_plot[[j]]$outcome[i]) &
+        grepl("_volume", forward_mr_plot[[j]]$outcome[i])) {
+      idp_category[i] <- "Regional and tissue volume"
+      idp_category_number[i] <- 5
   }
   if (grepl("_FAST_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "cortical, subcortical volume (FAST)"
-    idp_category_number[i] <- 18
+      idp_category[i] <- "Regional and tissue volume"
+      idp_category_number[i] <- 5
+  } 
+  if (grepl("_FA_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract FA"
+    idp_category_number[i] <- 6
   }
-  if (grepl("_FIRST_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "subcortical volume (FIRST)"
-    idp_category_number[i] <- 19
+  if (grepl("_L1_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract L1"
+    idp_category_number[i] <- 7
   }
-  if (grepl("_SIENAX_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "SIENAX"
-    idp_category_number[i] <- 20
+  if (grepl("_L2_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract L2"
+    idp_category_number[i] <- 8
   }
-  if (grepl("ThalamNuclei_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "ThalamNuclei"
-    idp_category_number[i] <- 21
+  if (grepl("_L3_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract L3"
+    idp_category_number[i] <- 9
   }
-  if (grepl("wg_", forward_mr_plot[[j]]$outcome[i])) {
-    idp_category[i] <- "wg"
-    idp_category_number[i] <- 22
+  if (grepl("_MD_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract MD"
+    idp_category_number[i] <- 10
+  }
+  if (grepl("_MO_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract MO"
+    idp_category_number[i] <- 11
+  }
+  if (grepl("_OD_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract OD"
+    idp_category_number[i] <- 12
+  }
+  if (grepl("_ICVF_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract ICVF"
+    idp_category_number[i] <- 13
+  }
+  if (grepl("_ISOVF_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "WM tract ISOVF"
+    idp_category_number[i] <- 14
+  }
+  if (grepl("_SWI_", forward_mr_plot[[j]]$outcome[i])) {
+    idp_category[i] <- "Regional T2*"
+    idp_category_number[i] <- 15
   }
   }
+  
   forward_mr_plot[[j]] <- cbind(forward_mr_plot[[j]], idp_category)
   forward_mr_plot[[j]] <- cbind(forward_mr_plot[[j]], idp_category_number)
   idp_category <- c()
@@ -425,35 +400,24 @@ forward_plot_phylum <-
   mutate(exposure_outcome_pair = as_factor(exposure_outcome_pair))  %>%
   ggplot(aes(x = exposure_outcome_pair, y = significane)) +
   geom_point(aes(colour = idp_category)) +
-  geom_hline(yintercept = -log10(5.56*(10^-3))) +
-  labs(x = "Phyla -IDPs",
-       y = "-log(p-value)", 
-       colour = "type of IDPs") + theme(axis.text.x = element_blank(),
-                                        legend.title = element_text( size=5), 
-                                        legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  labs(x = "Phyla",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(), legend.title = element_text(size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+ ylim(0,5) + scale_color_manual(values = c("aquamarine2",
                                 "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1",
-                                "brown4",
+                                "brown3",
                                 "coral",
-                                "chartreuse2",
-                                "chartreuse4",
                                 "cyan2",
-                                "black",
                                 "darkgoldenrod1",
-                                "darkgoldenrod4",
                                 "darkolivegreen3",
                                 "darkred",
                                 "gold",
                                 "pink",
                                 "purple",
-                                "green",
                                 "darkcyan",
-                                "maroon"
-  ))
+                                "maroon"))
 
 
 forward_plot_class <- 
@@ -462,35 +426,24 @@ forward_plot_class <-
   mutate(exposure_outcome_pair = as_factor(exposure_outcome_pair))  %>%
   ggplot(aes(x = exposure_outcome_pair, y = significane)) +
   geom_point(aes(colour = idp_category)) +
-  geom_hline(yintercept = -log10(3.33*(10^-3))) +
-  labs(x = "Class -IDPs",
-       y = "-log(p-value)", 
-       colour = "type of IDPs") + theme(axis.text.x = element_blank(),
-                                        legend.title = element_text( size=5), 
-                                        legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  labs(x = "Class",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(),legend.title = element_text( size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,5) + scale_color_manual(values = c("aquamarine2",
                                 "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1",
-                                "brown4",
+                                "brown3",
                                 "coral",
-                                "chartreuse2",
-                                "chartreuse4",
                                 "cyan2",
-                                "black",
                                 "darkgoldenrod1",
-                                "darkgoldenrod4",
                                 "darkolivegreen3",
                                 "darkred",
                                 "gold",
                                 "pink",
                                 "purple",
-                                "green",
                                 "darkcyan",
-                                "maroon"
-  ))
+                                "maroon"))
 
 forward_plot_family <- 
   forward_mr_plot[[3]] %>%
@@ -498,35 +451,24 @@ forward_plot_family <-
   mutate(exposure_outcome_pair = as_factor(exposure_outcome_pair))  %>%
   ggplot(aes(x = exposure_outcome_pair, y = significane)) +
   geom_point(aes(colour = idp_category)) +
-  geom_hline(yintercept = -log10(1.67*(10^-3))) +
-  labs(x = "Family -IDPs",
-       y = "-log(p-value)", 
-       colour = "type of IDPs") + theme(axis.text.x = element_blank(),
-                                        legend.title = element_text( size=5), 
-                                        legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  labs(x = "Family",y = "-log (p-value)",colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(),legend.title = element_text( size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+ scale_color_manual(values = c("aquamarine2",
                                 "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1",
-                                "brown4",
+                                "brown3",
                                 "coral",
-                                "chartreuse2",
-                                "chartreuse4",
                                 "cyan2",
-                                "black",
                                 "darkgoldenrod1",
-                                "darkgoldenrod4",
                                 "darkolivegreen3",
                                 "darkred",
                                 "gold",
                                 "pink",
                                 "purple",
-                                "green",
                                 "darkcyan",
-                                "maroon"
-  ))
+                                "maroon"))
 
 
 forward_plot_order <- 
@@ -535,97 +477,65 @@ forward_plot_order <-
   mutate(exposure_outcome_pair = as_factor(exposure_outcome_pair))  %>%
   ggplot(aes(x = exposure_outcome_pair, y = significane)) +
   geom_point(aes(colour = idp_category)) +
-  geom_hline(yintercept = -log10(2.63*(10^-3))) +
-  labs(x = "Order -IDPs",
-       y = "-log(p-value)", 
-       colour = "type of IDPs") + theme(axis.text.x = element_blank(),
-                                        legend.title = element_text(size = 5),
-                                        legend.text = element_text(size = 5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  labs(x = "Order",y = "-log (p-value)",colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(),legend.title = element_text(size = 5),
+        legend.text = element_text(size = 5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,5) + scale_color_manual(values = c("aquamarine2",
                                 "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1",
-                                "brown4",
+                                "brown3",
                                 "coral",
-                                "chartreuse2",
-                                "chartreuse4",
                                 "cyan2",
-                                "black",
                                 "darkgoldenrod1",
-                                "darkgoldenrod4",
                                 "darkolivegreen3",
                                 "darkred",
                                 "gold",
                                 "pink",
                                 "purple",
-                                "green",
                                 "darkcyan",
-                                "maroon"
-  ))
+                                "maroon"))
 
 forward_plot_genus <- 
   forward_mr_plot[[5]] %>%
   arrange(idp_category) %>%
   mutate(exposure_outcome_pair = as_factor(exposure_outcome_pair))  %>%
   ggplot(aes(x = exposure_outcome_pair, y = significane)) +
-  geom_point(aes(colour = idp_category)) +
-  geom_hline(yintercept = -log10(4.90*(10^-4))) +
-  labs(x = "Genra -IDPs",
-       y = "-log(p-value)", 
-       colour = "type of IDPs") + theme(axis.text.x = element_blank(),
-                                        legend.title = element_text( size=5), 
-                                        legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  geom_point(aes(colour = idp_category))+ 
+  labs(x = "Genra",y = "-log (p-value)",colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(),legend.title = element_text( size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,5) + scale_color_manual(values = c("aquamarine2",
                                 "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1",
-                                "brown4",
+                                "brown3",
                                 "coral",
-                                "chartreuse2",
-                                "chartreuse4",
                                 "cyan2",
-                                "black",
                                 "darkgoldenrod1",
-                                "darkgoldenrod4",
                                 "darkolivegreen3",
                                 "darkred",
                                 "gold",
                                 "pink",
                                 "purple",
-                                "green",
                                 "darkcyan",
-                                "maroon"
-  ))
+                                "maroon"))
 
 
 library(gtable)
 library(grid)
-
-#g1 <- ggplotGrob(forward_plot_phylum)
-#g2 <- ggplotGrob(forward_plot_class)
-#g3 <- ggplotGrob(forward_plot_order)
-#g4 <- ggplotGrob(forward_plot_family)
-#g5 <- ggplotGrob(forward_plot_genus)
-
-#g <- rbind(g1, g2, g3, g4, g5, size = "first")
-#g$widths <- unit.pmax(g1$widths, g2$widths, g3$widths, g4$widths, g5$widths)
-#grid.newpage()
-#final_forward_plot <- grid.draw(g)
-
-
 
 final_forward_plot <- ggarrange(forward_plot_phylum, forward_plot_class, 
                                 forward_plot_order, forward_plot_family,
                                 forward_plot_genus, ncol = 2, nrow = 3, 
                                 common.legend = TRUE, legend = "bottom")
 
-ggsave("final_forward_plot.svg", final_forward_plot, device = "svg") 
-ggsave("final_forward_plot.png", final_forward_plot, device = "png") 
+final_forward_plot <- grid.arrange(final_forward_plot,nrow=1,
+                                   top=text_grob("Forward MR \n Gut microbiota abundance -> Imaging-derived phenotypes"))
 
 
 
+
+
+       
 
