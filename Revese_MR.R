@@ -231,561 +231,265 @@ reverse_loo_plot <- mr_leaveoneout_plot(reverse_mr_loo)
 # We categorize exposures based on IDPs:
 
 reverse_mr_plot <- reverse_mr
+
+revere_mr_no_QC <- reverse_mr[!grepl("QC_",reverse_mr$exposure),]
+
+reverse_mr_phylum <- revere_mr_no_QC[grepl("phylum",
+                                           revere_mr_no_QC$outcome),]
+reverse_mr_class <- revere_mr_no_QC[grepl("class",
+                                          revere_mr_no_QC$outcome),]
+reverse_mr_order <- revere_mr_no_QC[grepl("order",
+                                          revere_mr_no_QC$outcome),]
+reverse_mr_family <- revere_mr_no_QC[grepl("family",
+                                           revere_mr_no_QC$outcome),]
+reverse_mr_genus <- revere_mr_no_QC[grepl("genus",
+                                          revere_mr_no_QC$outcome),]
+
+reverse_mr_plot <- list(reverse_mr_phylum, reverse_mr_class, reverse_mr_family,
+                        reverse_mr_order, reverse_mr_genus)
+
 idp_category_reverse = c()
 idp_category_number_reverse = c()
-
-for (i in 1:nrow(reverse_mr_plot)) {
-  if (grepl("QC_", reverse_mr_plot$exposure[i]) &
-      grepl("_SWI_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "QC"
-    idp_category_number_reverse[i] <- 1
-  } 
-  if (grepl("QC_", reverse_mr_plot$exposure[i]) &
-      grepl("_FLAIR_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "QC"
-    idp_category_number_reverse[i] <- 1
-  } 
-  if (grepl("QC_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "QC"
-    idp_category_number_reverse[i] <- 1
+for (j in 1:length(reverse_mr_plot)) {
+  for (i in 1:nrow(reverse_mr_plot[[j]])) {
+    if (grepl("_area_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "Cortical area"
+      idp_category_number_reverse[i] <- 1
+    } 
+    if (grepl("_thickness_", reverse_mr_plot[[j]]$exposure[i]) |
+        grepl("_number_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "Cortical thickness"
+      idp_category_number_reverse[i] <- 2
+    }
+    if (grepl("_intensity", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "Regional and tissue intensity"
+      idp_category_number_reverse[i] <- 3
+    }
+    if (grepl("_FLAIR_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "White matter hyperintensity volume"
+      idp_category_number_reverse[i] <- 4
+    }
+    if (!grepl("_FLAIR_", reverse_mr_plot[[j]]$exposure[i]) &
+        grepl("_volume", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "Regional and tissue volume"
+      idp_category_number_reverse[i] <- 5
+    }
+    if (grepl("_FAST_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "Regional and tissue volume"
+      idp_category_number_reverse[i] <- 5
+    } 
+    if (grepl("_FA_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract FA"
+      idp_category_number_reverse[i] <- 6
+    }
+    if (grepl("_L1_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract L1"
+      idp_category_number_reverse[i] <- 7
+    }
+    if (grepl("_L2_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract L2"
+      idp_category_number_reverse[i] <- 8
+    }
+    if (grepl("_L3_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract L3"
+      idp_category_number_reverse[i] <- 9
+    }
+    if (grepl("_MD_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract MD"
+      idp_category_number_reverse[i] <- 10
+    }
+    if (grepl("_MO_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract MO"
+      idp_category_number_reverse[i] <- 11
+    }
+    if (grepl("_OD_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract OD"
+      idp_category_number_reverse[i] <- 12
+    }
+    if (grepl("_ICVF_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract ICVF"
+      idp_category_number_reverse[i] <- 13
+    }
+    if (grepl("_ISOVF_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "WM tract ISOVF"
+      idp_category_number_reverse[i] <- 14
+    }
+    if (grepl("_SWI_", reverse_mr_plot[[j]]$exposure[i])) {
+      idp_category_reverse[i] <- "Regional T2*"
+      idp_category_number_reverse[i] <- 15
+    }
   }
-  if (grepl("AmygNuclei", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "AmygNuclei"
-    idp_category_number_reverse[i] <- 2
-  }
-  if (grepl("aparc-", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "aparc"
-    idp_category_number_reverse[i] <- 3
-  }
-  if (grepl("aseg_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "aseg"
-    idp_category_number_reverse[i] <- 4
-  }
-  if (grepl("BA-exvivo", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "BA"
-    idp_category_number_reverse[i] <- 5
-  }
-  if (grepl("Brainstem_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "Brain Stem"
-    idp_category_number_reverse[i] <- 6
-  }
-  if (grepl("HippSubfield_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "HippSubfield"
-    idp_category_number_reverse[i] <- 7
-  }
-  if (grepl("_FA_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI FA"
-    idp_category_number_reverse[i] <- 8
-  }
-  if (grepl("_L1_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI L1"
-    idp_category_number_reverse[i] <- 9
-  }
-  if (grepl("_L2_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI L2"
-    idp_category_number_reverse[i] <- 10
-  }
-  if (grepl("_L3_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI L3"
-    idp_category_number_reverse[i] <- 11
-  }
-  if (grepl("_MD_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI MD"
-    idp_category_number_reverse[i] <- 12
-  }
-  if (grepl("_MO_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI MO"
-    idp_category_number_reverse[i] <- 13
-  }
-  if (grepl("_OD_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI OD"
-    idp_category_number_reverse[i] <- 14
-  }
-  if (grepl("_ICVF_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI ICVF"
-    idp_category_number_reverse[i] <- 15
-  }
-  if (grepl("_ISOVF_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "dMRI ISOVF"
-    idp_category_number_reverse[i] <- 16
-  }
-  if (grepl("_SWI_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "SWI"
-    idp_category_number_reverse[i] <- 17
-  }
-  if (grepl("_FAST_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "cortical, subcortical volume (FAST)"
-    idp_category_number_reverse[i] <- 18
-  }
-  if (grepl("_FIRST_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "subcortical volume (FIRST)"
-    idp_category_number_reverse[i] <- 19
-  }
-  if (grepl("_SIENAX_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "SIENAX"
-    idp_category_number_reverse[i] <- 20
-  }
-  if (grepl("ThalamNuclei_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "ThalamNuclei"
-    idp_category_number_reverse[i] <- 21
-  }
-  if (grepl("wg_", reverse_mr_plot$exposure[i])) {
-    idp_category_reverse[i] <- "wg"
-    idp_category_number_reverse[i] <- 22
-  }
+  
+  reverse_mr_plot[[j]] <- cbind(reverse_mr_plot[[j]], idp_category_reverse)
+  reverse_mr_plot[[j]] <- cbind(reverse_mr_plot[[j]], idp_category_number_reverse)
+  idp_category_reverse <- c()
+  idp_category_number_reverse <- c()
 }
-
 
 exposure_outcome_pair_reverse <- c()
-for (i in 1:nrow(reverse_mr_plot)) {
-  exposure_outcome_pair_reverse[i] <- paste(reverse_mr_plot$exposure[i],
-                                            reverse_mr_plot$outcome[i], sep = " * ")
-}
+for (m in 1:length(reverse_mr_plot)) {
+  for (n in 1:nrow(reverse_mr_plot[[m]])) {
+    exposure_outcome_pair_reverse[n] <- paste(reverse_mr_plot[[m]]$id.exposure[n], 
+                                      reverse_mr_plot[[m]]$id.outcome[n], sep = " * ")
+  }
+  reverse_mr_plot[[m]] <- cbind(reverse_mr_plot[[m]], exposure_outcome_pair_reverse)
+  exposure_outcome_pair_reverse <- c()
+}  
 
 significane_reverse <- c()
-for (i in 1:nrow(reverse_mr_plot)) {
-  significane_reverse[i] <- -log10(reverse_mr_plot$pval[i])
+for (k in 1:length(reverse_mr_plot)) {
+  for (l in 1:nrow(reverse_mr_plot[[k]])) {
+    significane_reverse[l] <- -log10(reverse_mr_plot[[k]]$pval[l])
+  }
+  reverse_mr_plot[[k]] <- cbind(reverse_mr_plot[[k]], significane_reverse)
+  significane_reverse <- c()
 }
 
-microbiota_category_reverse <- c()
-for (i in 1:nrow(reverse_mr_plot)) {
-  if (grepl("phylum",reverse_mr_plot$outcome[i])){
-    microbiota_category_reverse[i] <- "phylum"
-  }
-  if (grepl("class",reverse_mr_plot$outcome[i])) {
-    microbiota_category_reverse[i] <- "class"
-  }
-  if (grepl("order",reverse_mr_plot$outcome[i])) {
-    microbiota_category_reverse[i] <- "order"
-  }
-  if (grepl("family",reverse_mr_plot$outcome[i])) {
-    microbiota_category_reverse[i] <- "family"
-  }
-  if (grepl("genus",reverse_mr_plot$outcome[i])) {
-    microbiota_category_reverse[i] <- "genus"
-  }
-}
-
-reverse_mr_plot <- cbind(reverse_mr_plot, idp_category_reverse, 
-                         idp_category_number_reverse, exposure_outcome_pair_reverse,
-                         significane_reverse,,microbiota_category_reverse)
-
-
-reverse_plot_qc <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="QC") %>%
-  arrange(microbiota_category_reverse) %>%
+reverse_plot_phylum <- 
+  reverse_mr_plot[[1]] %>%
+  arrange(idp_category_reverse) %>%
   mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
   ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/1060)) +
-  labs(x = "Taxa -QC",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                        legend.title = element_text( size=5), 
-                                        legend.text=element_text(size=5)) + 
+  geom_point(aes(colour = idp_category_reverse)) +
+  labs(x = "Phyla",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(), legend.title = element_text(size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
   scale_color_manual(values = c("aquamarine2",
+                                "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
+                                "brown3",
+                                "coral",
+                                "cyan2",
+                                "darkgoldenrod1",
+                                "darkolivegreen3",
+                                "darkred",
+                                "gold",
+                                "pink",
+                                "purple",
+                                "darkcyan",
+                                "maroon"))
 
-reverse_plot_AmygNuclei <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="AmygNuclei") %>%
-  arrange(microbiota_category_reverse) %>%
+reverse_plot_class <- 
+  reverse_mr_plot[[2]] %>%
+  arrange(idp_category_reverse) %>%
   mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
   ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/3144)) +
-  labs(x = "Taxa - AmygNuclei",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  geom_point(aes(colour = idp_category_reverse)) +
+  labs(x = "Class",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(), legend.title = element_text(size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,6) + scale_color_manual(values = c("aquamarine2",
+                                "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
+                                "brown3",
+                                "coral",
+                                "cyan2",
+                                "darkgoldenrod1",
+                                "darkolivegreen3",
+                                "darkred",
+                                "gold",
+                                "pink",
+                                "purple",
+                                "darkcyan",
+                                "maroon"))
 
-reverse_plot_aparc <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="aparc") %>%
-  arrange(microbiota_category_reverse) %>%
+reverse_plot_family <- 
+  reverse_mr_plot[[3]] %>%
+  arrange(idp_category_reverse) %>%
   mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
   ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/97639)) +
-  labs(x = "Taxa - aparc",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  geom_point(aes(colour = idp_category_reverse)) +
+  labs(x = "Family",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(), legend.title = element_text(size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,6) + scale_color_manual(values = c("aquamarine2",
+                                "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
+                                "brown3",
+                                "coral",
+                                "cyan2",
+                                "darkgoldenrod1",
+                                "darkolivegreen3",
+                                "darkred",
+                                "gold",
+                                "pink",
+                                "purple",
+                                "darkcyan",
+                                "maroon"))
 
-reverse_plot_aseg <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="aseg") %>%
-  arrange(microbiota_category_reverse) %>%
+reverse_plot_order <- 
+  reverse_mr_plot[[4]] %>%
+  arrange(idp_category_reverse) %>%
   mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
   ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/14277)) +
-  labs(x = "Taxa - aseg",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  geom_point(aes(colour = idp_category_reverse)) +
+  labs(x = "Order",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(), legend.title = element_text(size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,6) + scale_color_manual(values = c("aquamarine2",
+                                "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
+                                "brown3",
+                                "coral",
+                                "cyan2",
+                                "darkgoldenrod1",
+                                "darkolivegreen3",
+                                "darkred",
+                                "gold",
+                                "pink",
+                                "purple",
+                                "darkcyan",
+                                "maroon"))
 
-reverse_plot_BA <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="BA") %>%
-  arrange(microbiota_category_reverse) %>%
+reverse_plot_genus <- 
+  reverse_mr_plot[[5]] %>%
+  arrange(idp_category_reverse) %>%
   mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
   ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/10569)) +
-  labs(x = "Taxa - BA",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
+  geom_point(aes(colour = idp_category_reverse)) +
+  labs(x = "Genra",y = "-log (p-value)", colour = "type of IDPs") + 
+  theme(axis.text.x = element_blank(), legend.title = element_text(size=5), 
+        legend.text=element_text(size=5), axis.title.y = element_text(size = 8)) + 
+  ylim(0,6) + scale_color_manual(values = c("aquamarine2",
+                                "aquamarine4",
                                 "blue",
                                 "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_brainstem <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="Brain Stem") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/894)) +
-  labs(x = "Taxa - Brain Stem",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_HippSubfield <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="HippSubfield") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/7199)) +
-  labs(x = "Taxa - HippSubfield",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_FA <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI FA") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/12424)) +
-  labs(x = "Taxa - dMRI FA",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_l1 <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI L1") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/11884)) +
-  labs(x = "Taxa - dMRI L1",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_l2 <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI L2") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/12254)) +
-  labs(x = "Taxa - dMRI L2",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_l3 <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI L3") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/11899)) +
-  labs(x = "Taxa - dMRI L3",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_md <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI MD") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/11810)) +
-  labs(x = "Taxa - dMRI MD",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_mo <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI MO") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/8991)) +
-  labs(x = "Taxa - dMRI MO",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_od <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI OD") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/10590)) +
-  labs(x = "Taxa - dMRI OD",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_ICVF <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI ICVF") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/13071)) +
-  labs(x = "Taxa - dMRI ICVF",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_ISOVF <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="dMRI ISOVF") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/9462)) +
-  labs(x = "Taxa - dMRI ISOV",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_SWI <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="SWI") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/1529)) +
-  labs(x = "Taxa - SWI",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_SIENAX <- 
-  filter(reverse_mr_plot, reverse_mr_plot$idp_category_reverse=="SIENAX") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/1760)) +
-  labs(x = "Taxa - SIENAX",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_fast <- 
-  filter(reverse_mr_plot, 
-         reverse_mr_plot$idp_category_reverse=="cortical, subcortical volume (FAST)") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/17503)) +
-  labs(x = "Taxa - cortical, subcortical volume (FAST)",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_first <- 
-  filter(reverse_mr_plot, 
-         reverse_mr_plot$idp_category_reverse=="subcortical volume (FIRST)") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/2345)) +
-  labs(x = "Taxa - subcortical volume (FIRST)",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_wg <- 
-  filter(reverse_mr_plot, 
-         reverse_mr_plot$idp_category_reverse=="wg") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/12324)) +
-  labs(x = "Taxa - wg",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
-
-reverse_plot_ThalamNuclei <- 
-  filter(reverse_mr_plot, 
-         reverse_mr_plot$idp_category_reverse=="ThalamNuclei") %>%
-  arrange(microbiota_category_reverse) %>%
-  mutate(exposure_outcome_pair_reverse = as_factor(exposure_outcome_pair_reverse))  %>%
-  ggplot(aes(x = exposure_outcome_pair_reverse, y = significane_reverse)) +
-  geom_point(aes(colour = microbiota_category_reverse)) +
-  geom_hline(yintercept = -log10(0.05/8303)) +
-  labs(x = "Taxa - ThalamNuclei",
-       y = "-log(p-value)", 
-       colour = "Taxa") + theme(axis.text.x = element_blank(),
-                                legend.title = element_text( size=5), 
-                                legend.text=element_text(size=5),
-                                axis.title.y = element_text(size=5)) + 
-  scale_color_manual(values = c("aquamarine2",
-                                "blue",
-                                "#1b98e0",
-                                "blueviolet",
-                                "brown1"))
+                                "brown3",
+                                "coral",
+                                "cyan2",
+                                "darkgoldenrod1",
+                                "darkolivegreen3",
+                                "darkred",
+                                "gold",
+                                "pink",
+                                "purple",
+                                "darkcyan",
+                                "maroon"))
 
 library(gtable)
 library(grid)
 library(ggpubr)
 
-final_reverse_plot <- ggarrange(reverse_plot_AmygNuclei, reverse_plot_aparc,
-                                reverse_plot_aseg, reverse_plot_BA,
-                                reverse_plot_brainstem, reverse_plot_FA, 
-                                reverse_plot_fast, reverse_plot_first, 
-                                reverse_plot_HippSubfield, reverse_plot_ICVF,
-                                reverse_plot_ISOVF, reverse_plot_l1,
-                                reverse_plot_l2, reverse_plot_l3, 
-                                reverse_plot_md, reverse_plot_mo, 
-                                reverse_plot_od, reverse_plot_qc, 
-                                reverse_plot_SIENAX, reverse_plot_SWI,
-                                reverse_plot_ThalamNuclei, reverse_plot_wg,
-                                ncol = 3, nrow = 8, 
-                                common.legend = TRUE,legend = "bottom")
+final_reverse_plot <- ggarrange(reverse_plot_phylum, reverse_plot_class, 
+                                reverse_plot_order, reverse_plot_family,
+                                reverse_plot_genus, ncol = 2, nrow = 3, 
+                                common.legend = TRUE, legend = "bottom")
+
+final_reverse_plot <- grid.arrange(final_reverse_plot,nrow=1,
+                                   top=text_grob("Reverse MR \n Imaging-derived phenotypes -> Gut microbiota abundance"))
+
+
+
+
+
+
+
+
+
+    
+
+
