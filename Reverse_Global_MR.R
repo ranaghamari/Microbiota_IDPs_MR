@@ -103,7 +103,7 @@ mr_fit_raps_all <- mr.raps::mr.raps.all(b_exp = forward_harmonized_data$beta.exp
                                         se_exp = forward_harmonized_data$se.exposure,
                                         se_out = forward_harmonized_data$se.outcome)
 
-## two sample MR using mixture models
+## two sample MR 
 
 reverse_mr <- mr(reverse_harmonized_data)
 
