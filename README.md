@@ -11,4 +11,4 @@ In "Forward_MR.R" file, the forward two sample-MR codes with description of each
 
 After completing the initial MR analysis, we decided to also conduct MR for regional IDPs. As a result, we examined the relationship between Gut microbiota abundance and 13 global IDPs. These IDPs include Cortical thickness (CT), Fractional anisotropy (FA), Folding index, Gaussian curvature, Mean curvature, Intracellular volume fraction (ICVF), Isotropic volume fraction (ISOVF), Volume, Surface area (SA), Mean diffusivity (MD), Orientation dispersion (OD), Local gyrification index (LGI), and Intrinsic.
 
-The results of gut microbiotal-global IDPs MR are shown in Forward_Global_MR.png and Reverse_Global_MR.png plots. 
+The results of gut microbiotal-global IDPs MR are shown in Forward_Global_MR.png and Reverse_Global_MR.png plots. Moreover, the codes are available in Forward_Global_MR.R and Reverse_Global_MR.R files. 
